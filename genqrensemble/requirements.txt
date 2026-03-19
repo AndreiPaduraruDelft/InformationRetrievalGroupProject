@@ -1,0 +1,11 @@
+python-terrier
+transformers
+torch
+accelerate
+bitsandbytes
+sentencepiece
+tqdm
+pandas
+numpy
+scipy
+statsmodels
