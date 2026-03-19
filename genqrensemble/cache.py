@@ -20,11 +20,12 @@ def save_cache(path: str, cache: dict):
         json.dump(cache, f)
 
 
-def build_reformulated_topics(topics, reformulator, instructions, cache_path, mode):
+def build_reformulated_topics(topics, reformulator, instructions, cache_path, mode,
+                              use_cache: bool = False):
     from genqr_methods import flanqr_reformulate, genqr_ensemble_reformulate
     import pandas as pd
 
-    cache = load_cache(cache_path)
+    cache = load_cache(cache_path) if use_cache else {}
     rows  = []
 
     for _, row in topics.iterrows():
@@ -36,7 +37,8 @@ def build_reformulated_topics(topics, reformulator, instructions, cache_path, mo
             else:
                 reformed = genqr_ensemble_reformulate(query, reformulator, instructions)
             cache[key] = reformed
-            save_cache(cache_path, cache)
+            if use_cache:
+                save_cache(cache_path, cache)
         rows.append({"qid": qid, "query": cache[key]})
 
     return pd.DataFrame(rows)

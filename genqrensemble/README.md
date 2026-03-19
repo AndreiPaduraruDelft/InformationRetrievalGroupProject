@@ -33,7 +33,7 @@ python run_experiment.py --model google/flan-t5-xl    --device cpu
 python run_experiment.py --model google/flan-t5-xxl --device cuda
 ```
 
-Each run evaluates **BM25**, **FlanQR**, and **GenQREnsemble** on both `beir/nfcorpus` and `beir/scifact` and saves results to `results/<model>__<dataset>.csv`.
+Each run evaluates **BM25**, **FlanQR**, and **GenQREnsemble** on both `beir/nfcorpus` and `beir/scifact` and saves results to `results/<model>__<dataset>__k<n>__<timestamp>.csv`.
 
 ### Run on a single dataset with a limited number of queries
 
@@ -47,6 +47,17 @@ python run_experiment.py \
   --num_samples 20
 ```
 
+### Reuse cached reformulations
+
+By default, reformulations are **always regenerated from scratch**. Pass `--use_cache` to skip regeneration for queries that already have a cached result:
+
+```bash
+python run_experiment.py \
+  --model google/flan-t5-base \
+  --device cpu \
+  --use_cache
+```
+
 ### CLI options
 
 | Flag | Default | Description |
@@ -54,9 +65,20 @@ python run_experiment.py \
 | `--model` | required | HuggingFace model ID |
 | `--device` | `cpu` | `cpu` or `cuda` |
 | `--datasets` | both BEIR sets | space-separated dataset names |
-| `--cache_dir` | `cache/` | directory for cached reformulations |
+| `--cache_dir` | `cache/` | directory for cached reformulations and indices |
 | `--output` | `results/` | directory for result CSVs |
 | `--num_samples` | `None` (all) | limit evaluation to the first k queries |
+| `--use_cache` | off | reuse cached reformulations instead of regenerating |
+
+### Output file naming
+
+Each result CSV is named with the model, dataset, query count, and a timestamp:
+
+```
+flan-t5-base__beir_scifact__k20__2024-03-19_14-32-05.csv
+```
+
+The CSV also includes a `num_samples` column recording the number of queries evaluated.
 
 ### Merge all results
 
