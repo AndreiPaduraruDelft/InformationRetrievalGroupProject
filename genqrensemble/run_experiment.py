@@ -3,7 +3,7 @@ from datetime import datetime
 import pyterrier as pt
 from config import INSTRUCTIONS, DATASETS
 from reformulator import HFReformulator
-from cache import get_cache_path, build_reformulated_topics
+from cache import get_cache_path, build_all_reformulated_topics
 from evaluate import run_experiment
 
 
@@ -26,8 +26,10 @@ def main():
     parser.add_argument("--output",      default="results")
     parser.add_argument("--num_samples", type=int, default=None,
                         help="Limit evaluation to the first k queries")
-    parser.add_argument("--use_cache",   action="store_true",
+    parser.add_argument("--use_cache",          action="store_true",
                         help="Load cached reformulations and skip regeneration for cached queries")
+    parser.add_argument("--log_reformulations", action="store_true",
+                        help="Write per-query reformulation log to logs/<run_name>.log")
     args = parser.parse_args()
 
     if not pt.java.started():
@@ -52,20 +54,35 @@ def main():
         if args.num_samples is not None:
             topics = topics.head(args.num_samples).reset_index(drop=True)
 
-        cache_path      = get_cache_path(args.cache_dir, args.model, dataset_name)
-        flanqr_topics   = build_reformulated_topics(topics, reformulator, INSTRUCTIONS, cache_path, "flanqr",   use_cache=args.use_cache)
-        ensemble_topics = build_reformulated_topics(topics, reformulator, INSTRUCTIONS, cache_path, "ensemble", use_cache=args.use_cache)
-
-        results_df = run_experiment(bm25, topics, qrels, flanqr_topics, ensemble_topics)
-        timestamp  = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
-        results_df["num_samples"] = len(topics)
-        print(results_df.to_string())
-
         safe_model   = args.model.replace("/", "_").replace("google_", "")
         safe_dataset = dataset_name.replace("/", "_")
         k_tag        = f"k{len(topics)}"
-        out_path     = os.path.join(args.output, f"{safe_model}__{safe_dataset}__{k_tag}__{timestamp}.csv")
+        timestamp    = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        run_name     = f"{safe_model}__{safe_dataset}__{k_tag}__{timestamp}"
+
+        cache_path = get_cache_path(args.cache_dir, args.model, dataset_name)
+
+        log_file = None
+        if args.log_reformulations:
+            os.makedirs("logs", exist_ok=True)
+            log_path = os.path.join("logs", f"{run_name}.log")
+            log_file = open(log_path, "w")
+            print(f"  logging reformulations → {log_path}")
+
+        try:
+            flanqr_topics, ensemble_topics = build_all_reformulated_topics(
+                topics, reformulator, INSTRUCTIONS, cache_path,
+                use_cache=args.use_cache, log_file=log_file,
+            )
+        finally:
+            if log_file is not None:
+                log_file.close()
+
+        results_df = run_experiment(bm25, topics, qrels, flanqr_topics, ensemble_topics)
+        results_df["num_samples"] = len(topics)
+        print(results_df.to_string())
+
+        out_path = os.path.join(args.output, f"{run_name}.csv")
         results_df.to_csv(out_path, index=False)
 
 
