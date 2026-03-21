@@ -11,7 +11,7 @@ for path in glob.glob("results/*.csv"):
 
 final = (pd.concat(dfs, ignore_index=True)
            .rename(columns={"name": "setting", "recip_rank": "mrr"})
-           [["dataset", "model", "setting", "ndcg_cut_10", "map", "mrr"]]
+           [["dataset", "model", "setting", "ndcg_cut_10", "map", "mrr", "P_10"]]
            .sort_values(["dataset", "model", "setting"]))
 
 final.to_csv("results/results_final.csv", index=False)
