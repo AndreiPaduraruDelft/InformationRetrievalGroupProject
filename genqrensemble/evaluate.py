@@ -1,5 +1,5 @@
 import re
-
+from collections import Counter
 import pyterrier as pt
 
 
@@ -45,15 +45,20 @@ def _weighted_ensemble_swapper(original_topics, ensemble_topics, beta=0.05):
         orig_q = orig_map.get(qid, "")
         ens_q  = ens_map.get(qid, orig_q)
 
+        orig_counts = Counter(tokenise(orig_q))
+        ens_counts = Counter(tokenise(ens_q))
+
         query_toks = {}
 
-        # Original terms: base weight 1.0
-        for token in tokenise(orig_q):
+        # Original terms get base weight 1.0
+        for token in orig_counts:
             query_toks[token] = 1.0
 
-        # Expansion terms: accumulate beta per occurrence
-        for token in tokenise(ens_q):
-            query_toks[token] = query_toks.get(token, 0.0) + beta
+        # Only extra occurrences beyond the original count contribute beta
+        for token, ens_count in ens_counts.items():
+            extra_count = max(0, ens_count - orig_counts.get(token, 0))
+            if extra_count > 0:
+                query_toks[token] = query_toks.get(token, 0.0) + beta * extra_count
 
         return query_toks
 
