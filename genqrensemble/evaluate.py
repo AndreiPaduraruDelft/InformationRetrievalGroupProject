@@ -19,45 +19,47 @@ def _query_swapper(reformulated_topics):
 
 
 def _weighted_ensemble_swapper(original_topics, ensemble_topics, beta=0.05):
-    """Builds a Terrier weighted query combining original and ensemble reformulation.
+    """Builds structured query_toks combining original and ensemble reformulation.
 
-    Terrier supports per-term boosting via the `term^weight` query syntax.
-    Original query terms carry implicit weight 1.0; expansion terms unique to
-    the ensemble output are appended with ^beta (default 0.05), downweighting
-    them relative to the original signal.
+    Original terms start with weight 1.0. Expansion terms contribute beta per
+    occurrence across the ensemble output, accumulating if repeated. Terms
+    present in both original and expansion have their weights summed.
+
+    Uses query_toks (dict) instead of TerrierQL term^weight strings, bypassing
+    the query parser entirely and giving Terrier direct access to term weights.
 
     Example:
-        original:  "cancer treatment"
-        ensemble:  "cancer treatment oncology chemotherapy radiation"
-        result:    "cancer treatment oncology^0.05 chemotherapy^0.05 radiation^0.05"
+        original:  "black hole formation"
+        ensemble:  "black hole collapse black dwarf stellar"
+        beta=0.05
+        result:    {"black": 1.1, "hole": 1.05, "formation": 1.0,
+                    "collapse": 0.05, "dwarf": 0.05, "stellar": 0.05}
     """
     orig_map = dict(zip(original_topics["qid"].astype(str), original_topics["query"]))
     ens_map  = dict(zip(ensemble_topics["qid"].astype(str), ensemble_topics["query"]))
 
-    def build_weighted(qid):
+    def tokenise(text):
+        return re.sub(r"[^\w\s]", "", text).lower().split()
+
+    def build_query_toks(qid):
         orig_q = orig_map.get(qid, "")
         ens_q  = ens_map.get(qid, orig_q)
 
-        # Tokenise both queries (strip punctuation, lowercase) to find expansion terms
-        orig_tokens = set(re.sub(r"[^\w\s]", "", orig_q).lower().split())
-        ens_tokens  = re.sub(r"[^\w\s]", "", ens_q).lower().split()
+        query_toks = {}
 
-        # Collect unique expansion terms not already in the original query
-        seen = set(orig_tokens)
-        extra = []
-        for token in ens_tokens:
-            if token not in seen:
-                seen.add(token)
-                extra.append(token)
+        # Original terms: base weight 1.0
+        for token in tokenise(orig_q):
+            query_toks[token] = 1.0
 
-        if not extra:
-            return orig_q
-        weighted_extras = " ".join(f"{t}^{beta}" for t in extra)
-        return f"{orig_q} {weighted_extras}"
+        # Expansion terms: accumulate beta per occurrence
+        for token in tokenise(ens_q):
+            query_toks[token] = query_toks.get(token, 0.0) + beta
+
+        return query_toks
 
     def swap(df):
         df = df.copy()
-        df["query"] = df["qid"].astype(str).map(build_weighted)
+        df["query_toks"] = df["qid"].astype(str).map(build_query_toks)
         return df
 
     return pt.apply.generic(swap)
