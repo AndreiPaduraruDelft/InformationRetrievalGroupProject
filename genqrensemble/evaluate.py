@@ -1,5 +1,5 @@
 import re
-from collections import Counter
+
 import pyterrier as pt
 
 
@@ -19,46 +19,48 @@ def _query_swapper(reformulated_topics):
 
 
 def _weighted_ensemble_swapper(original_topics, ensemble_topics, beta=0.05):
-    """Builds structured query_toks combining original and ensemble reformulation.
+    """Build structured query_toks from original + reformulated queries.
 
-    Original terms start with weight 1.0. Expansion terms contribute beta per
-    occurrence across the ensemble output, accumulating if repeated. Terms
-    present in both original and expansion have their weights summed.
+    Original query terms contribute +1.0 per occurrence.
+    Reformulated/ensemble query terms contribute +beta per occurrence.
 
-    Uses query_toks (dict) instead of TerrierQL term^weight strings, bypassing
-    the query parser entirely and giving Terrier direct access to term weights.
+    This means duplicates from both original and reformulated queries are kept
+    and accumulated.
 
     Example:
         original:  "black hole formation"
         ensemble:  "black hole collapse black dwarf stellar"
         beta=0.05
-        result:    {"black": 1.1, "hole": 1.05, "formation": 1.0,
-                    "collapse": 0.05, "dwarf": 0.05, "stellar": 0.05}
+
+        result:
+        {
+            "black": 1.05,
+            "hole": 1.05,
+            "formation": 1.0,
+            "collapse": 0.05,
+            "dwarf": 0.05,
+            "stellar": 0.05
+        }
     """
     orig_map = dict(zip(original_topics["qid"].astype(str), original_topics["query"]))
-    ens_map  = dict(zip(ensemble_topics["qid"].astype(str), ensemble_topics["query"]))
+    ens_map = dict(zip(ensemble_topics["qid"].astype(str), ensemble_topics["query"]))
 
     def tokenise(text):
         return re.sub(r"[^\w\s]", "", text).lower().split()
 
     def build_query_toks(qid):
         orig_q = orig_map.get(qid, "")
-        ens_q  = ens_map.get(qid, orig_q)
-
-        orig_counts = Counter(tokenise(orig_q))
-        ens_counts = Counter(tokenise(ens_q))
+        ens_q = ens_map.get(qid, orig_q)
 
         query_toks = {}
 
-        # Original terms get base weight 1.0
-        for token in orig_counts:
-            query_toks[token] = 1.0
+        # Original terms: +1.0 per occurrence
+        for token in tokenise(orig_q):
+            query_toks[token] = query_toks.get(token, 0.0) + 1.0
 
-        # Only extra occurrences beyond the original count contribute beta
-        for token, ens_count in ens_counts.items():
-            extra_count = max(0, ens_count - orig_counts.get(token, 0))
-            if extra_count > 0:
-                query_toks[token] = query_toks.get(token, 0.0) + beta * extra_count
+        # Reformulated terms: +beta per occurrence
+        for token in tokenise(ens_q):
+            query_toks[token] = query_toks.get(token, 0.0) + beta
 
         return query_toks
 
