@@ -6,14 +6,29 @@ from reformulator import HFReformulator
 from cache import get_cache_path, build_all_reformulated_topics
 from evaluate import run_experiment
 
+# Index fields per dataset (title is absent in msmarco-passage)
+_DATASET_FIELDS = {
+    "msmarco-passage/trec-dl-2019": ["text"],
+    "beir/dbpedia-entity/test":     ["text", "title"],
+}
 
-def get_or_build_index(corpus_dataset, index_path):
+
+def load_pt_dataset(dataset_name):
+    """Load a dataset via PyTerrier's irds wrapper and return corpus iter fn, topics, qrels, and fields."""
+    dataset = pt.get_dataset(f"irds:{dataset_name}")
+    fields  = _DATASET_FIELDS.get(dataset_name, ["text"])
+    topics  = dataset.get_topics()
+    qrels   = dataset.get_qrels()
+    return dataset.get_corpus_iter, topics, qrels, fields
+
+
+def get_or_build_index(corpus_iter_fn, index_path, fields):
     index_path = os.path.abspath(index_path)
     props = os.path.join(index_path, "data.properties")
     if not os.path.exists(props):
         os.makedirs(index_path, exist_ok=True)
-        indexer = pt.IterDictIndexer(index_path, overwrite=True, fields=["text", "title"])
-        indexer.index(corpus_dataset.get_corpus_iter())
+        indexer = pt.IterDictIndexer(index_path, overwrite=True, fields=fields)
+        indexer.index(corpus_iter_fn())
     return pt.IndexFactory.of(index_path + "/data.properties")
 
 
@@ -41,15 +56,15 @@ def main():
     for dataset_name in args.datasets:
         print(f"\n=== {dataset_name} | {args.model} ===")
 
-        corpus_dataset = pt.get_dataset(f"irds:{dataset_name}")
-        test_dataset   = pt.get_dataset(f"irds:{dataset_name}/test")
+        corpus_iter_fn, topics, qrels, fields = load_pt_dataset(dataset_name)
+
+        # Keep only topics that have relevance judgements
+        judged_qids = set(qrels["qid"].astype(str).unique())
+        topics = topics[topics["qid"].astype(str).isin(judged_qids)].reset_index(drop=True)
 
         index_path = os.path.join(args.cache_dir, "indices", dataset_name.replace("/", "_"))
-        index      = get_or_build_index(corpus_dataset, index_path)
+        index      = get_or_build_index(corpus_iter_fn, index_path, fields)
         bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=100)
-
-        topics = test_dataset.get_topics()
-        qrels  = test_dataset.get_qrels()
 
         if args.num_samples is not None:
             topics = topics.head(args.num_samples).reset_index(drop=True)
