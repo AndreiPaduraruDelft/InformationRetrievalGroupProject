@@ -26,10 +26,13 @@ def get_or_build_index(corpus_iter_fn, index_path, fields):
     index_path = os.path.abspath(index_path)
     props = os.path.join(index_path, "data.properties")
     if not os.path.exists(props):
+        print(f"  building index at {index_path} ...")
         os.makedirs(index_path, exist_ok=True)
-        indexer = pt.IterDictIndexer(index_path, overwrite=True, fields=fields,
-                                     meta=["docno", "text"])
+        indexer = pt.IterDictIndexer(index_path, overwrite=True, fields=fields)
         indexer.index(corpus_iter_fn())
+        print("  index built.")
+    else:
+        print(f"  loading existing index from {index_path}")
     return pt.IndexFactory.of(index_path + "/data.properties")
 
 
@@ -46,6 +49,8 @@ def main():
                         help="Load cached reformulations and skip regeneration for cached queries")
     parser.add_argument("--log_reformulations", action="store_true",
                         help="Write per-query reformulation log to logs/<run_name>.log")
+    parser.add_argument("--rerank", action="store_true",
+                        help="Add MonoT5 reranking pipelines to the experiment")
     args = parser.parse_args()
 
     if not pt.java.started():
@@ -57,15 +62,18 @@ def main():
     for dataset_name in args.datasets:
         print(f"\n=== {dataset_name} | {args.model} ===")
 
+        print("  loading topics and qrels ...")
         corpus_iter_fn, topics, qrels, fields = load_pt_dataset(dataset_name)
 
         # Keep only topics that have relevance judgements
         judged_qids = set(qrels["qid"].astype(str).unique())
         topics = topics[topics["qid"].astype(str).isin(judged_qids)].reset_index(drop=True)
+        print(f"  {len(topics)} judged topics, {len(qrels)} qrels")
 
         index_path = os.path.join(args.cache_dir, "indices", dataset_name.replace("/", "_"))
         index      = get_or_build_index(corpus_iter_fn, index_path, fields)
         bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=1000)
+        print("  BM25 retriever ready")
 
         if args.num_samples is not None:
             topics = topics.head(args.num_samples).reset_index(drop=True)
@@ -86,15 +94,18 @@ def main():
             print(f"  logging reformulations → {log_path}")
 
         try:
+            print("  reformulating queries ...")
             flanqr_topics, ensemble_topics = build_all_reformulated_topics(
                 topics, reformulator, INSTRUCTIONS, cache_path,
                 use_cache=args.use_cache, log_file=log_file,
             )
+            print("  reformulations done.")
         finally:
             if log_file is not None:
                 log_file.close()
 
-        results_df = run_experiment(bm25, index, topics, qrels, flanqr_topics, ensemble_topics)
+        results_df = run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_topics,
+                                    rerank=args.rerank)
         results_df["num_samples"] = len(topics)
         numeric_cols = results_df.select_dtypes(include="number").columns
         results_df[numeric_cols] = results_df[numeric_cols].apply(
