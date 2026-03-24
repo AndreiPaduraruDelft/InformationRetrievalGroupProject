@@ -1,5 +1,6 @@
 import re
 
+import ir_measures
 import pyterrier as pt
 from tqdm import tqdm
 
@@ -82,7 +83,8 @@ def run_experiment(bm25, topics, qrels, flanqr_topics, ensemble_topics):
         [bm25, flanqr_pipe, ensemble_pipe, weighted_pipe],
         topics,
         qrels,
-        eval_metrics=["ndcg_cut_10", "map", "recip_rank", "P_10"],
+        eval_metrics=[ir_measures.nDCG@10, ir_measures.RR(rel=2), ir_measures.AP(rel=1)],
         names=["BM25", "FlanQR", "GenQREnsemble", "GenQREnsemble_beta_0_05"],
-        baseline=0,
+        baseline=1,
+        correction="holm",
     )

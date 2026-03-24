@@ -95,6 +95,10 @@ def main():
 
         results_df = run_experiment(bm25, topics, qrels, flanqr_topics, ensemble_topics)
         results_df["num_samples"] = len(topics)
+        numeric_cols = results_df.select_dtypes(include="number").columns
+        results_df[numeric_cols] = results_df[numeric_cols].apply(
+            lambda col: col.map(lambda x: float(f"{x:.3g}") if x == x else x)
+        )
         print(results_df.to_string())
 
         out_path = os.path.join(args.output, f"{run_name}.csv")
