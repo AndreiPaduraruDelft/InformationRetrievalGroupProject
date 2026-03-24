@@ -83,7 +83,7 @@ def run_experiment(bm25, topics, qrels, flanqr_topics, ensemble_topics):
         [bm25, flanqr_pipe, ensemble_pipe, weighted_pipe],
         topics,
         qrels,
-        eval_metrics=[ir_measures.nDCG@10, ir_measures.RR(rel=2), ir_measures.AP(rel=1)],
+        eval_metrics=[ir_measures.nDCG@10, ir_measures.RR(rel=2), ir_measures.AP(rel=2)],
         names=["BM25", "FlanQR", "GenQREnsemble", "GenQREnsemble_beta_0_05"],
         baseline=1,
         correction="holm",

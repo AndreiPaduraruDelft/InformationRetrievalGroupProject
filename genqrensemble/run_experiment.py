@@ -64,7 +64,7 @@ def main():
 
         index_path = os.path.join(args.cache_dir, "indices", dataset_name.replace("/", "_"))
         index      = get_or_build_index(corpus_iter_fn, index_path, fields)
-        bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=100)
+        bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=1000)
 
         if args.num_samples is not None:
             topics = topics.head(args.num_samples).reset_index(drop=True)
