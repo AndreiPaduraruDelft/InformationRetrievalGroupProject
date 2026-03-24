@@ -1,4 +1,5 @@
 import json, os
+from tqdm import tqdm
 
 
 def get_cache_path(cache_dir: str, model_id: str, dataset_name: str) -> str:
@@ -37,8 +38,7 @@ def build_reformulated_topics(topics, reformulator, instructions, cache_path, mo
             else:
                 reformed = genqr_ensemble_reformulate(query, reformulator, instructions)
             cache[key] = reformed
-            if use_cache:
-                save_cache(cache_path, cache)
+            save_cache(cache_path, cache)
         rows.append({"qid": qid, "query": cache[key]})
 
     return pd.DataFrame(rows)
@@ -58,20 +58,18 @@ def build_all_reformulated_topics(topics, reformulator, instructions, cache_path
     flanqr_rows  = []
     ensemble_rows = []
 
-    for _, row in topics.iterrows():
+    for _, row in tqdm(topics.iterrows(), total=len(topics), desc="reformulating queries"):
         qid, query = str(row["qid"]), row["query"]
 
         flanqr_key = f"flanqr__{qid}"
         if flanqr_key not in cache:
             cache[flanqr_key] = flanqr_reformulate(query, reformulator, instructions[0])
-            if use_cache:
-                save_cache(cache_path, cache)
+            save_cache(cache_path, cache)
 
         ensemble_key = f"ensemble__{qid}"
         if ensemble_key not in cache:
             cache[ensemble_key] = genqr_ensemble_reformulate(query, reformulator, instructions)
-            if use_cache:
-                save_cache(cache_path, cache)
+            save_cache(cache_path, cache)
 
         if log_file is not None:
             log_file.write(f"[qid: {qid}]\n")

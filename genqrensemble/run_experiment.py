@@ -100,7 +100,6 @@ def main():
         out_path = os.path.join(args.output, f"{run_name}.csv")
         results_df.to_csv(out_path, index=False)
         print(f"\n  saved → {out_path}")
-        print(results_df.to_csv(index=False))
 
 
 if __name__ == "__main__":

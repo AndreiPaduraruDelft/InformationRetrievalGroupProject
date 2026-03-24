@@ -1,6 +1,7 @@
 import re
 
 import pyterrier as pt
+from tqdm import tqdm
 
 
 def _query_swapper(reformulated_topics):
