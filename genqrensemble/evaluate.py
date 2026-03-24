@@ -75,16 +75,17 @@ def _weighted_ensemble_swapper(original_topics, ensemble_topics, beta=0.05):
 
 
 def run_experiment(bm25, topics, qrels, flanqr_topics, ensemble_topics):
-    flanqr_pipe   = _query_swapper(flanqr_topics)   >> bm25
-    ensemble_pipe = _query_swapper(ensemble_topics) >> bm25
-    weighted_pipe = _weighted_ensemble_swapper(topics, ensemble_topics, beta=0.05) >> bm25
+    flanqr_pipe          = _query_swapper(flanqr_topics)                              >> bm25
+    ensemble_pipe        = _query_swapper(ensemble_topics)                            >> bm25
+    flanqr_weighted_pipe = _weighted_ensemble_swapper(topics, flanqr_topics,   beta=0.05) >> bm25
+    weighted_pipe        = _weighted_ensemble_swapper(topics, ensemble_topics, beta=0.05) >> bm25
 
     return pt.Experiment(
-        [bm25, flanqr_pipe, ensemble_pipe, weighted_pipe],
+        [bm25, flanqr_pipe, flanqr_weighted_pipe, ensemble_pipe, weighted_pipe],
         topics,
         qrels,
         eval_metrics=[ir_measures.nDCG@10, ir_measures.RR(rel=2), ir_measures.AP(rel=2)],
-        names=["BM25", "FlanQR", "GenQREnsemble", "GenQREnsemble_beta_0_05"],
+        names=["BM25", "FlanQR", "FlanQR_beta_0_05", "GenQREnsemble", "GenQREnsemble_beta_0_05"],
         baseline=1,
         correction="holm",
     )
