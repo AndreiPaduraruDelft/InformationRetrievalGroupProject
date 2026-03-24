@@ -74,18 +74,32 @@ def _weighted_ensemble_swapper(original_topics, ensemble_topics, beta=0.05):
     return pt.apply.generic(swap)
 
 
-def run_experiment(bm25, topics, qrels, flanqr_topics, ensemble_topics):
-    flanqr_pipe          = _query_swapper(flanqr_topics)                              >> bm25
-    ensemble_pipe        = _query_swapper(ensemble_topics)                            >> bm25
+def run_experiment(bm25, index, topics, qrels, flanqr_topics, ensemble_topics):
+    from pyterrier_t5 import MonoT5ReRanker
+    mono_t5  = MonoT5ReRanker(model="castorini/monot5-base-msmarco", verbose=False)
+    get_text = pt.text.get_text(index, "text")
+
+    flanqr_pipe          = _query_swapper(flanqr_topics)                                  >> bm25
+    ensemble_pipe        = _query_swapper(ensemble_topics)                                >> bm25
     flanqr_weighted_pipe = _weighted_ensemble_swapper(topics, flanqr_topics,   beta=0.05) >> bm25
     weighted_pipe        = _weighted_ensemble_swapper(topics, ensemble_topics, beta=0.05) >> bm25
 
+    bm25_mono     = bm25        >> get_text >> mono_t5
+    flanqr_mono   = flanqr_pipe >> get_text >> mono_t5
+    ensemble_mono = ensemble_pipe >> get_text >> mono_t5
+
     return pt.Experiment(
-        [bm25, flanqr_pipe, flanqr_weighted_pipe, ensemble_pipe, weighted_pipe],
+        [
+            bm25, flanqr_pipe, flanqr_weighted_pipe, ensemble_pipe, weighted_pipe,
+            bm25_mono, flanqr_mono, ensemble_mono,
+        ],
         topics,
         qrels,
         eval_metrics=[ir_measures.nDCG@10, ir_measures.RR(rel=2), ir_measures.AP(rel=2)],
-        names=["BM25", "FlanQR", "FlanQR_beta_0_05", "GenQREnsemble", "GenQREnsemble_beta_0_05"],
+        names=[
+            "BM25", "FlanQR", "FlanQR_beta_0_05", "GenQREnsemble", "GenQREnsemble_beta_0_05",
+            "BM25+MonoT5", "FlanQR+MonoT5", "GenQREnsemble+MonoT5",
+        ],
         baseline=1,
         correction="holm",
     )

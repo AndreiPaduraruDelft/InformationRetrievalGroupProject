@@ -27,7 +27,8 @@ def get_or_build_index(corpus_iter_fn, index_path, fields):
     props = os.path.join(index_path, "data.properties")
     if not os.path.exists(props):
         os.makedirs(index_path, exist_ok=True)
-        indexer = pt.IterDictIndexer(index_path, overwrite=True, fields=fields)
+        indexer = pt.IterDictIndexer(index_path, overwrite=True, fields=fields,
+                                     meta=["docno", "text"])
         indexer.index(corpus_iter_fn())
     return pt.IndexFactory.of(index_path + "/data.properties")
 
@@ -93,7 +94,7 @@ def main():
             if log_file is not None:
                 log_file.close()
 
-        results_df = run_experiment(bm25, topics, qrels, flanqr_topics, ensemble_topics)
+        results_df = run_experiment(bm25, index, topics, qrels, flanqr_topics, ensemble_topics)
         results_df["num_samples"] = len(topics)
         numeric_cols = results_df.select_dtypes(include="number").columns
         results_df[numeric_cols] = results_df[numeric_cols].apply(
