@@ -11,4 +11,4 @@ INSTRUCTIONS = [
     "Enhance search outcomes by recommending beneficial expansion terms to supplement the query",
 ]
 
-DATASETS = ["msmarco-passage/trec-dl-2019", "beir/dbpedia-entity/test"]
+DATASETS = ["msmarco-passage/trec-dl-2019/judged", "beir/dbpedia-entity/test"]

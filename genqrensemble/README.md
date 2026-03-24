@@ -24,7 +24,7 @@ Experiments run on the following datasets loaded via `ir_datasets`:
 
 | Dataset | Corpus | Queries | Relevance |
 |---|---|---|---|
-| `msmarco-passage/trec-dl-2019` | MS MARCO passages | TREC DL 2019 | 0–3 (graded) |
+| `msmarco-passage/trec-dl-2019/judged` | MS MARCO passages | TREC DL 2019 (judged only) | 0–3 (graded) |
 | `beir/dbpedia-entity/test` | DBpedia entities | BEIR test split | 0–2 (graded) |
 
 Corpora are indexed automatically on first run and cached under `cache/indices/`.
@@ -54,9 +54,12 @@ Useful for quick smoke-tests or debugging before a full run:
 python run_experiment.py \
   --model google/flan-t5-base \
   --device cpu \
-  --datasets msmarco-passage/trec-dl-2019 \
-  --num_samples 20
+  --datasets msmarco-passage/trec-dl-2019/judged \
+  --num_samples 20 \
+  --log_reformulations
 ```
+
+Per-query reformulation logs are written to `logs/<run_name>.log`.
 
 ### Reuse cached reformulations
 
