@@ -74,7 +74,8 @@ def _weighted_ensemble_swapper(original_topics, ensemble_topics, beta=0.05):
     return pt.apply.generic(swap)
 
 
-def run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_topics, rerank=False):
+def run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_topics,
+                   rerank=False, rerank_depth=1000):
     flanqr_pipe          = _query_swapper(flanqr_topics)                                  >> bm25
     ensemble_pipe        = _query_swapper(ensemble_topics)                                >> bm25
     flanqr_weighted_pipe = _weighted_ensemble_swapper(topics, flanqr_topics,   beta=0.05) >> bm25
@@ -84,14 +85,14 @@ def run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_to
     names     = ["BM25", "FlanQR", "FlanQR_beta_0_05", "GenQREnsemble", "GenQREnsemble_beta_0_05"]
 
     if rerank:
-        print("reranking has started")
+        print(f"  reranking has started (depth={rerank_depth})")
         from pyterrier_t5 import MonoT5ReRanker
         mono_t5  = MonoT5ReRanker(model="castorini/monot5-base-msmarco", verbose=False)
         get_text = pt.text.get_text(pt.get_dataset(f"irds:{dataset_name}"), "text")
         pipelines += [
-            bm25        >> get_text >> mono_t5,
-            flanqr_pipe >> get_text >> mono_t5,
-            ensemble_pipe >> get_text >> mono_t5,
+            (bm25          % rerank_depth) >> get_text >> mono_t5,
+            (flanqr_pipe   % rerank_depth) >> get_text >> mono_t5,
+            (ensemble_pipe % rerank_depth) >> get_text >> mono_t5,
         ]
         names += ["BM25+MonoT5", "FlanQR+MonoT5", "GenQREnsemble+MonoT5"]
 

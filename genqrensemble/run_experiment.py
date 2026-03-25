@@ -39,7 +39,7 @@ def get_or_build_index(corpus_iter_fn, index_path, fields):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model",       required=True)
-    parser.add_argument("--device",      default="cpu", choices=["cpu", "cuda"])
+    parser.add_argument("--device",      default="cpu", choices=["cpu", "cuda", "mps"])
     parser.add_argument("--datasets",    nargs="+", default=DATASETS)
     parser.add_argument("--cache_dir",   default="cache")
     parser.add_argument("--output",      default="results")
@@ -51,6 +51,8 @@ def main():
                         help="Write per-query reformulation log to logs/<run_name>.log")
     parser.add_argument("--rerank", action="store_true",
                         help="Add MonoT5 reranking pipelines to the experiment")
+    parser.add_argument("--rerank_depth", type=int, default=1000,
+                        help="Number of BM25 results to rerank with MonoT5 (default: 1000)")
     args = parser.parse_args()
 
     if not pt.java.started():
@@ -105,7 +107,7 @@ def main():
                 log_file.close()
 
         results_df = run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_topics,
-                                    rerank=args.rerank)
+                                    rerank=args.rerank, rerank_depth=args.rerank_depth)
         results_df["num_samples"] = len(topics)
         numeric_cols = results_df.select_dtypes(include="number").columns
         results_df[numeric_cols] = results_df[numeric_cols].apply(

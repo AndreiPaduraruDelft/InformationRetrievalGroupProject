@@ -1,6 +1,6 @@
 # GenQREnsemble
 
-Reproduces the **GenQREnsemble** query reformulation method and evaluates it against **BM25** and **FlanQR** baselines using PyTerrier.
+Reproduces the **GenQREnsemble** query reformulation method and evaluates it against **BM25** and **FlanQR** baselines using PyTerrier. Optionally adds **MonoT5** reranking.
 
 ## Setup
 
@@ -44,7 +44,7 @@ python run_experiment.py --model google/flan-t5-xl    --device cpu
 python run_experiment.py --model google/flan-t5-xxl --device cuda
 ```
 
-Each run evaluates **BM25**, **FlanQR**, **GenQREnsemble**, and **GenQREnsemble (weighted β=0.05)** on both datasets and saves results to `results/<model>__<dataset>__k<n>__<timestamp>.csv`.
+Each run evaluates **BM25**, **FlanQR**, **FlanQR (β=0.05)**, **GenQREnsemble**, and **GenQREnsemble (β=0.05)** on the specified datasets and saves results to `results/<model>__<dataset>__k<n>__<timestamp>.csv`.
 
 ### Run on a single dataset with a limited number of queries
 
@@ -63,7 +63,7 @@ Per-query reformulation logs are written to `logs/<run_name>.log`.
 
 ### Reuse cached reformulations
 
-By default, reformulations are **always regenerated from scratch**. Pass `--use_cache` to skip regeneration for queries that already have a cached result:
+Reformulations are saved to a JSON cache on every run. Pass `--use_cache` to skip regeneration for queries already in the cache:
 
 ```bash
 python run_experiment.py \
@@ -72,25 +72,48 @@ python run_experiment.py \
   --use_cache
 ```
 
+### MonoT5 reranking
+
+Add `--rerank` to include **BM25+MonoT5**, **FlanQR+MonoT5**, and **GenQREnsemble+MonoT5** pipelines using `castorini/monot5-base-msmarco`. Use `--rerank_depth` to control how many BM25 results are passed to MonoT5 (default: 1000, use 100 for faster CPU runs):
+
+```bash
+# Full depth — matches paper, requires GPU for reasonable speed
+python run_experiment.py \
+  --model google/flan-t5-base \
+  --device cpu \
+  --use_cache \
+  --rerank
+
+# Reduced depth — faster on CPU, slight metric difference
+python run_experiment.py \
+  --model google/flan-t5-base \
+  --device cpu \
+  --use_cache \
+  --rerank \
+  --rerank_depth 100
+```
+
 ### CLI options
 
 | Flag | Default | Description |
 |---|---|---|
 | `--model` | required | HuggingFace model ID |
-| `--device` | `cpu` | `cpu` or `cuda` |
+| `--device` | `cpu` | `cpu`, `cuda`, or `mps` (Apple Silicon) |
 | `--datasets` | both datasets | space-separated `ir_datasets` dataset names |
 | `--cache_dir` | `cache/` | directory for cached reformulations and indices |
 | `--output` | `results/` | directory for result CSVs |
 | `--num_samples` | `None` (all) | limit evaluation to the first k queries |
-| `--use_cache` | off | reuse cached reformulations instead of regenerating |
+| `--use_cache` | off | skip regeneration for queries already in the cache |
 | `--log_reformulations` | off | write per-query reformulation log to `logs/<run_name>.log` |
+| `--rerank` | off | add MonoT5 reranking pipelines to the experiment |
+| `--rerank_depth` | `1000` | number of BM25 results to rerank with MonoT5 |
 
 ### Output file naming
 
 Each result CSV is named with the model, dataset, query count, and a timestamp:
 
 ```
-flan-t5-base__msmarco-passage_trec-dl-2019__k43__2024-03-19_14-32-05.csv
+flan-t5-base__msmarco-passage_trec-dl-2019_judged__k43__2024-03-19_14-32-05.csv
 ```
 
 The CSV also includes a `num_samples` column recording the number of queries evaluated.
@@ -136,7 +159,7 @@ genqrensemble/
 ├── reformulator.py     — HFReformulator (wraps flan-t5 via HuggingFace)
 ├── genqr_methods.py    — FlanQR and GenQREnsemble reformulation logic
 ├── cache.py            — JSON cache to avoid re-generating reformulations
-├── evaluate.py         — pt.Experiment runner
+├── evaluate.py         — pt.Experiment runner (BM25 + optional MonoT5)
 ├── run_experiment.py   — Main CLI entry point
 ├── merge_results.py    — Aggregates CSVs into final table + LaTeX
 ├── slurm_job.sh        — SLURM script for DelftBlue
@@ -147,11 +170,10 @@ genqrensemble/
 
 ## Metrics
 
-Results are reported as:
+Results are reported using official TREC DL 2019 evaluation measures:
 
-- **nDCG@10** — primary ranking quality metric
-- **MAP** — mean average precision
-- **MRR** — mean reciprocal rank
-- **P@10** — precision at 10
+- **nDCG@10** — primary ranking quality metric (graded relevance)
+- **AP(rel=2)** — mean average precision, relevance threshold ≥ 2
+- **RR(rel=2)** — mean reciprocal rank, relevance threshold ≥ 2
 
-Significance testing uses paired t-tests with **Holm-Bonferroni correction** against the BM25 baseline (`baseline=0` in `pt.Experiment`).
+Significance testing uses paired t-tests with **Holm-Bonferroni correction** against the **FlanQR** baseline (`baseline=1` in `pt.Experiment`).
