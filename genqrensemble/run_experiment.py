@@ -28,7 +28,8 @@ def get_or_build_index(corpus_iter_fn, index_path, fields):
     if not os.path.exists(props):
         print(f"  building index at {index_path} ...")
         os.makedirs(index_path, exist_ok=True)
-        indexer = pt.IterDictIndexer(index_path, overwrite=True, fields=fields)
+        indexer = pt.IterDictIndexer(index_path, overwrite=True, fields=fields,
+                                     meta={'docno': 512})
         indexer.index(corpus_iter_fn())
         print("  index built.")
     else:
