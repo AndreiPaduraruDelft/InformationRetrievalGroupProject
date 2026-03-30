@@ -12,3 +12,17 @@ INSTRUCTIONS = [
 ]
 
 DATASETS = ["msmarco-passage/trec-dl-2019/judged", "beir/dbpedia-entity/test"]
+
+# Per-dataset retrieval and evaluation settings.
+# rel_threshold: relevance level used for RR and AP (binary cutoff)
+# num_results:   number of BM25 candidates retrieved per query
+DATASET_CONFIG = {
+    "msmarco-passage/trec-dl-2019/judged": {
+        "rel_threshold": 2,   # TREC DL 2019: 0-3 graded; rel≥2 is standard
+        "num_results":   1000,
+    },
+    "beir/dbpedia-entity/test": {
+        "rel_threshold": 2,   # DBpedia: 0-2 graded; rel≥1 is the BEIR convention
+        "num_results":   1000,
+    },
+}

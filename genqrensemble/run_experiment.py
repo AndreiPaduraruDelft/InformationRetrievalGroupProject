@@ -1,7 +1,7 @@
 import argparse, os
 from datetime import datetime
 import pyterrier as pt
-from config import INSTRUCTIONS, DATASETS
+from config import INSTRUCTIONS, DATASETS, DATASET_CONFIG
 from reformulator import HFReformulator
 from cache import get_cache_path, build_all_reformulated_topics
 from evaluate import run_experiment
@@ -73,10 +73,14 @@ def main():
         topics = topics[topics["qid"].astype(str).isin(judged_qids)].reset_index(drop=True)
         print(f"  {len(topics)} judged topics, {len(qrels)} qrels")
 
+        ds_cfg       = DATASET_CONFIG.get(dataset_name, {"rel_threshold": 2, "num_results": 1000})
+        rel_threshold = ds_cfg["rel_threshold"]
+        num_results   = ds_cfg["num_results"]
+
         index_path = os.path.join(args.cache_dir, "indices", dataset_name.replace("/", "_"))
         index      = get_or_build_index(corpus_iter_fn, index_path, fields)
-        bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=1000)
-        print("  BM25 retriever ready")
+        bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=num_results)
+        print(f"  BM25 retriever ready (num_results={num_results}, rel_threshold={rel_threshold})")
 
         if args.num_samples is not None:
             topics = topics.head(args.num_samples).reset_index(drop=True)
@@ -108,7 +112,8 @@ def main():
                 log_file.close()
 
         results_df = run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_topics,
-                                    rerank=args.rerank, rerank_depth=args.rerank_depth)
+                                    rerank=args.rerank, rerank_depth=args.rerank_depth,
+                                    rel_threshold=rel_threshold)
         results_df["num_samples"] = len(topics)
         numeric_cols = results_df.select_dtypes(include="number").columns
         results_df[numeric_cols] = results_df[numeric_cols].apply(
