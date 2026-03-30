@@ -7,6 +7,6 @@
 #SBATCH --output=logs/%j.out
 
 module load java/11
-source activate your_env
+source activate IR
 
 python run_experiment.py --model google/flan-t5-xxl --device cuda
