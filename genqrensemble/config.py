@@ -27,8 +27,8 @@ DATASET_CONFIG = {
     "beir/dbpedia-entity/test": {
         "rel_threshold": 2,            # DBpedia: 0-2 graded; matches paper (rel≥2 = relevant)
         "num_results":   1000,
-        "bm25_k1":       0.9,
-        "bm25_b":        0.65,
+        "bm25_k1":       1.2,
+        "bm25_b":        0.75,
         "concat_fields": ["title", "text"],  # Concatenate title+text into a single index field
     },
 }
