@@ -22,6 +22,13 @@ def load_pt_dataset(dataset_name):
     return dataset.get_corpus_iter, topics, qrels, fields
 
 
+def _concat_corpus_iter(corpus_iter_fn, concat_fields):
+    """Wrap a corpus iterator to concatenate specified fields into 'text'."""
+    for doc in corpus_iter_fn():
+        doc["text"] = " ".join(doc.get(f, "") or "" for f in concat_fields)
+        yield doc
+
+
 def get_or_build_index(corpus_iter_fn, index_path, fields):
     index_path = os.path.abspath(index_path)
     props = os.path.join(index_path, "data.properties")
@@ -73,14 +80,26 @@ def main():
         topics = topics[topics["qid"].astype(str).isin(judged_qids)].reset_index(drop=True)
         print(f"  {len(topics)} judged topics, {len(qrels)} qrels")
 
-        ds_cfg       = DATASET_CONFIG.get(dataset_name, {"rel_threshold": 2, "num_results": 1000})
+        ds_cfg        = DATASET_CONFIG.get(dataset_name, {"rel_threshold": 2, "num_results": 1000,
+                                                           "bm25_k1": 1.2, "bm25_b": 0.75})
         rel_threshold = ds_cfg["rel_threshold"]
         num_results   = ds_cfg["num_results"]
+        bm25_k1       = ds_cfg["bm25_k1"]
+        bm25_b        = ds_cfg["bm25_b"]
+        concat_fields = ds_cfg.get("concat_fields")
+
+        if concat_fields:
+            effective_corpus = lambda cf=concat_fields: _concat_corpus_iter(corpus_iter_fn, cf)
+            effective_fields = ["text"]
+        else:
+            effective_corpus = corpus_iter_fn
+            effective_fields = fields
 
         index_path = os.path.join(args.cache_dir, "indices", dataset_name.replace("/", "_"))
-        index      = get_or_build_index(corpus_iter_fn, index_path, fields)
-        bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=num_results)
-        print(f"  BM25 retriever ready (num_results={num_results}, rel_threshold={rel_threshold})")
+        index      = get_or_build_index(effective_corpus, index_path, effective_fields)
+        bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=num_results,
+                                          controls={"bm25.k_1": bm25_k1, "bm25.k_3": 8, "c": bm25_b})
+        print(f"  BM25 retriever ready (num_results={num_results}, k1={bm25_k1}, b={bm25_b}, rel_threshold={rel_threshold})")
 
         if args.num_samples is not None:
             topics = topics.head(args.num_samples).reset_index(drop=True)
