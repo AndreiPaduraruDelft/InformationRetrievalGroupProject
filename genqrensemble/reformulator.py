@@ -1,40 +1,29 @@
-from transformers import AutoTokenizer, AutoConfig, AutoModelForSeq2SeqLM, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 
 
 class HFReformulator:
     def __init__(self, model_id: str, device: str = "cpu"):
         self.tokenizer = AutoTokenizer.from_pretrained(model_id)
-        
-        config = AutoConfig.from_pretrained(model_id)
-        self.is_encoder_decoder = getattr(config, 'is_encoder_decoder', False)
-
-        if self.is_encoder_decoder:
-            if device == "cuda":
-                self.model = AutoModelForSeq2SeqLM.from_pretrained(
-                    model_id,
-                    device_map="auto",
-                    torch_dtype=torch.float16,
-                )
-            else:
-                self.model = AutoModelForSeq2SeqLM.from_pretrained(
-                    model_id,
-                    torch_dtype=torch.float32,
-                ).to(device)
-        else:
-            self.model = AutoModelForCausalLM.from_pretrained(
+        if device == "cuda":
+            self.model = AutoModelForSeq2SeqLM.from_pretrained(
                 model_id,
-                dtype=torch.float16, 
+                device_map="auto",
+                torch_dtype=torch.float16,
+            )
+        else:
+            self.model = AutoModelForSeq2SeqLM.from_pretrained(
+                model_id,
+                torch_dtype=torch.float32,
             ).to(device)
-        
         self.device = device
 
     def generate_keywords(self, instruction: str, query: str) -> str:
         prompt = f"{instruction}: {query}"
+        input_device = next(self.model.parameters()).device
         inputs = self.tokenizer(
             prompt, return_tensors="pt", truncation=True, max_length=512
-        ).to(self.device)
-        
+        ).to(input_device)
         outputs = self.model.generate(
             **inputs,
             max_new_tokens=64,
@@ -43,9 +32,4 @@ class HFReformulator:
             top_k=200,
             repetition_penalty=1.2,
         )
-        
-        if self.is_encoder_decoder:
-            return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        else:
-            input_length = inputs["input_ids"].shape[-1]
-            return self.tokenizer.decode(outputs[0][input_length:], skip_special_tokens=True)
+        return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
