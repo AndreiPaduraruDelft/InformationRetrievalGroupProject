@@ -10,6 +10,7 @@ from evaluate import run_experiment
 _DATASET_FIELDS = {
     "msmarco-passage/trec-dl-2019/judged": ["text"],
     "beir/dbpedia-entity/test":            ["text", "title"],
+    "beir/webis-touche2020/v2":            ["text"],
 }
 
 
@@ -19,6 +20,8 @@ def load_pt_dataset(dataset_name):
     fields  = _DATASET_FIELDS.get(dataset_name, ["text"])
     topics  = dataset.get_topics()
     qrels   = dataset.get_qrels()
+    if "query" not in topics.columns and "text" in topics.columns:
+        topics = topics.rename(columns={"text": "query"})
     return dataset.get_corpus_iter, topics, qrels, fields
 
 
