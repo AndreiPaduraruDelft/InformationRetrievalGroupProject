@@ -1,6 +1,10 @@
 python-terrier
+pyserini
+ir-measures
+ir-datasets
 transformers
 torch
+torchvision
 accelerate
 bitsandbytes
 sentencepiece
@@ -9,3 +13,5 @@ pandas
 numpy
 scipy
 statsmodels
+# Windows/AMD GPU only (DirectML backend):
+# torch-directml

@@ -12,3 +12,11 @@ INSTRUCTIONS = [
 ]
 
 DATASETS = ["msmarco-passage/trec-dl-2019/judged", "beir/dbpedia-entity/test"]
+
+# BEIR datasets with freely downloadable corpora (useful for smoke-tests)
+BEIR_DATASETS = ["beir/nfcorpus/test", "beir/scifact/test"]
+
+# Robust04 requires TREC Disks 4+5 placed under ~/.ir_datasets/trec-robust04/
+# Expected directories: FBIS, FR94, FT, LATIMES
+# See: https://trec.nist.gov/data/cd45/index.html
+ROBUST04_DATASETS = ["trec-robust04"]

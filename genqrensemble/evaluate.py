@@ -4,6 +4,11 @@ import ir_measures
 import pyterrier as pt
 from tqdm import tqdm
 
+_DATASET_METRICS = {
+    "trec-robust04": [ir_measures.nDCG @ 10, ir_measures.RR(rel=2), ir_measures.AP(rel=2), ir_measures.P @ 10],
+}
+_DEFAULT_METRICS = [ir_measures.nDCG @ 10, ir_measures.RR(rel=2), ir_measures.AP(rel=2), ir_measures.P @ 10]
+
 
 def _query_swapper(reformulated_topics):
     """Transformer that replaces queries with pre-reformulated ones, keyed by qid."""
@@ -84,6 +89,8 @@ def run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_to
     pipelines = [bm25, flanqr_pipe, flanqr_weighted_pipe, ensemble_pipe, weighted_pipe]
     names     = ["BM25", "FlanQR", "FlanQR_beta_0_05", "GenQREnsemble", "GenQREnsemble_beta_0_05"]
 
+    eval_metrics = _DATASET_METRICS.get(dataset_name, _DEFAULT_METRICS)
+
     if rerank:
         print(f"  reranking has started (depth={rerank_depth})")
         from pyterrier_t5 import MonoT5ReRanker
@@ -100,7 +107,7 @@ def run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_to
         pipelines,
         topics,
         qrels,
-        eval_metrics=[ir_measures.nDCG@10, ir_measures.RR(rel=2), ir_measures.AP(rel=2)],
+        eval_metrics=eval_metrics,
         names=names,
         baseline=1,
         correction="holm",
