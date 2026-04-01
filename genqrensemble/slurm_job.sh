@@ -4,23 +4,28 @@
 #SBATCH --partition=gpu-a100
 #SBATCH --time=6:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=2
 #SBATCH --gpus-per-task=1
-#SBATCH --mem-per-cpu=12G
+#SBATCH --mem-per-cpu=7G
 #SBATCH --account=Education-EEMCS-Courses-DSAIT4095
 #SBATCH --output=logs/%j.out
 #SBATCH --mail-type=START,END,FAIL
 
-source $(conda info --base)/etc/profile.d/conda.sh
+module load 2025
+module load cuda/12.9
+module load miniconda3
 conda activate IR
 
 export HF_HOME=/scratch/knikolaevskii/hf_cache
 export IR_DATASETS_HOME=/scratch/knikolaevskii/ir_datasets
+export TRANSFORMERS_OFFLINE=1
+export HF_DATASETS_OFFLINE=1
 
 python run_experiment.py \
   --model google/flan-t5-xxl \
   --device cuda \
   --datasets msmarco-passage/trec-dl-2019/judged \
-  --num_samples 20 \
-  --use_cache \
-  --log_reformulations
+  --log_reformulations \
+  --rerank \
+  --rerank_depth 100 \
+   --use_cache
