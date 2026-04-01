@@ -21,16 +21,7 @@ export IR_DATASETS_HOME=/scratch/knikolaevskii/ir_datasets
 export TRANSFORMERS_OFFLINE=1
 export HF_DATASETS_OFFLINE=1
 
-python run_experiment.py \
-  --model google/flan-t5-xxl \
-  --device cuda \
-  --datasets beir/dbpedia-entity/test \
-  --log_reformulations \
-  --rerank \
-  --rerank_depth 1000 \
-   --use_cache
-
-   python run_experiment.py \
-  --model google/flan-t5-xxl \
-  --device cpu \
-  --datasets msmarco-passage/trec-dl-2019/judged
+python reformulate.py --queries msmarco-passage_trec-dl-2019_judged_queries.json \
+                          --model google/flan-t5-xxl \
+                          --device cuda \
+                          --output cache/google_flan-t5-xxl__msmarco-passage_trec-dl-2019_judged.json

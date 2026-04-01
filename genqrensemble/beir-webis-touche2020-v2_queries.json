@@ -1,0 +1,198 @@
+[
+  {
+    "qid": "1",
+    "query": "Should teachers get tenure?"
+  },
+  {
+    "qid": "2",
+    "query": "Is vaping with e-cigarettes safe?"
+  },
+  {
+    "qid": "3",
+    "query": "Should insider trading be allowed?"
+  },
+  {
+    "qid": "4",
+    "query": "Should corporal punishment be used in schools?"
+  },
+  {
+    "qid": "5",
+    "query": "Should social security be privatized?"
+  },
+  {
+    "qid": "6",
+    "query": "Is a college education worth it?"
+  },
+  {
+    "qid": "7",
+    "query": "Should felons who have completed their sentence be allowed to vote?"
+  },
+  {
+    "qid": "8",
+    "query": "Should abortion be legal?"
+  },
+  {
+    "qid": "9",
+    "query": "Should students have to wear school uniforms?"
+  },
+  {
+    "qid": "10",
+    "query": "Should any vaccines be required for children?"
+  },
+  {
+    "qid": "11",
+    "query": "Should performance-enhancing drugs be accepted in sports?"
+  },
+  {
+    "qid": "12",
+    "query": "Should birth control pills be available over the counter?"
+  },
+  {
+    "qid": "13",
+    "query": "Can alternative energy effectively replace fossil fuels?"
+  },
+  {
+    "qid": "14",
+    "query": "Is sexual orientation determined at birth?"
+  },
+  {
+    "qid": "15",
+    "query": "Should animals be used for scientific or commercial testing?"
+  },
+  {
+    "qid": "16",
+    "query": "Should prescription drugs be advertised directly to consumers?"
+  },
+  {
+    "qid": "17",
+    "query": "Should recreational marijuana be legal?"
+  },
+  {
+    "qid": "18",
+    "query": "Should churches remain tax-exempt?"
+  },
+  {
+    "qid": "19",
+    "query": "Should gay marriage be legal?"
+  },
+  {
+    "qid": "20",
+    "query": "Is drinking milk healthy for humans?"
+  },
+  {
+    "qid": "21",
+    "query": "Is human activity primarily responsible for global climate change?"
+  },
+  {
+    "qid": "22",
+    "query": "Is a two-state solution an acceptable solution to the Israeli-Palestinian conflict?"
+  },
+  {
+    "qid": "23",
+    "query": "Should euthanasia or physician-assisted suicide be legal?"
+  },
+  {
+    "qid": "24",
+    "query": "Does lowering the federal corporate income tax rate create jobs?"
+  },
+  {
+    "qid": "26",
+    "query": "Do standardized tests improve education?"
+  },
+  {
+    "qid": "27",
+    "query": "Should more gun control laws be enacted?"
+  },
+  {
+    "qid": "28",
+    "query": "Should prostitution be legal?"
+  },
+  {
+    "qid": "29",
+    "query": "Should the government allow illegal immigrants to become citizens?"
+  },
+  {
+    "qid": "30",
+    "query": "Should adults have the right to carry a concealed handgun?"
+  },
+  {
+    "qid": "31",
+    "query": "Is obesity a disease?"
+  },
+  {
+    "qid": "32",
+    "query": "Do electronic voting machines improve the voting process?"
+  },
+  {
+    "qid": "33",
+    "query": "Should people become vegetarian?"
+  },
+  {
+    "qid": "34",
+    "query": "Are social networking sites good for our society?"
+  },
+  {
+    "qid": "35",
+    "query": "Do violent video games contribute to youth violence?"
+  },
+  {
+    "qid": "36",
+    "query": "Is golf a sport?"
+  },
+  {
+    "qid": "37",
+    "query": "Is cell phone radiation safe?"
+  },
+  {
+    "qid": "38",
+    "query": "Should marijuana be a medical option?"
+  },
+  {
+    "qid": "39",
+    "query": "Should the federal minimum wage be increased?"
+  },
+  {
+    "qid": "40",
+    "query": "Should the death penalty be allowed?"
+  },
+  {
+    "qid": "41",
+    "query": "Should student loan debt be easier to discharge in bankruptcy?"
+  },
+  {
+    "qid": "42",
+    "query": "Should fighting be allowed in hockey?"
+  },
+  {
+    "qid": "43",
+    "query": "Should bottled water be banned?"
+  },
+  {
+    "qid": "44",
+    "query": "Should election day be a national holiday?"
+  },
+  {
+    "qid": "45",
+    "query": "Should the penny stay in circulation?"
+  },
+  {
+    "qid": "46",
+    "query": "Should net neutrality be restored?"
+  },
+  {
+    "qid": "47",
+    "query": "Is homework beneficial?"
+  },
+  {
+    "qid": "48",
+    "query": "Should the voting age be lowered?"
+  },
+  {
+    "qid": "49",
+    "query": "Should body cameras be mandatory for police?"
+  },
+  {
+    "qid": "50",
+    "query": "Should everyone get a universal basic income?"
+  }
+]
