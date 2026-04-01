@@ -129,8 +129,10 @@ def get_or_build_index(corpus_iter_fn, index_path, fields, dataset_name=None):
     if not os.path.exists(props):
         print(f"  building index at {index_path} ...")
         os.makedirs(index_path, exist_ok=True)
+        # Store document text in meta so pt.text.get_text(index, "text") works for reranking
+        meta = {'docno': 512, 'text': 4096}
         indexer = pt.IterDictIndexer(index_path, overwrite=True, fields=fields,
-                                     meta={'docno': 512})
+                                     meta=meta)
         if corpus_iter_fn is not None:
             indexer.index(corpus_iter_fn())
         elif dataset_name in _PYSERINI_CORPUS_SOURCE:
@@ -201,6 +203,7 @@ def main():
             bm25 = PyseriniRetriever(_PYSERINI_PREBUILT[dataset_name], num_results=1000,
                                      k1=args.bm25_k1, b=args.bm25_b)
             print(f"  Pyserini BM25 retriever ready (k1={args.bm25_k1}, b={args.bm25_b})")
+            get_text_pipe = None  # will fall back to ir_datasets in evaluate.py
         else:
             index_path = os.path.join(args.cache_dir, "indices", dataset_name.replace("/", "_"))
             index      = get_or_build_index(corpus_iter_fn, index_path, fields, dataset_name=dataset_name)
@@ -209,6 +212,13 @@ def main():
                 controls={"bm25.k_1": str(args.bm25_k1), "bm25.b": str(args.bm25_b)},
             )
             print(f"  Terrier BM25 retriever ready (k1={args.bm25_k1}, b={args.bm25_b})")
+            # Use the Terrier index metadata for doc text if available (needed for reranking)
+            if args.rerank and "text" in index.getMetaIndex().getKeys():
+                get_text_pipe = pt.text.get_text(index, "text")
+            elif args.rerank and dataset_name not in _PT_DATASET_ALIAS:
+                get_text_pipe = pt.text.get_text(pt.get_dataset(f"irds:{dataset_name}"), "text")
+            else:
+                get_text_pipe = None
 
         if args.num_samples is not None:
             topics = topics.head(args.num_samples).reset_index(drop=True)
@@ -245,7 +255,8 @@ def main():
                     log_file.close()
 
         results_df = run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_topics,
-                                    rerank=args.rerank, rerank_depth=args.rerank_depth)
+                                    rerank=args.rerank, rerank_depth=args.rerank_depth,
+                                    get_text_pipe=get_text_pipe, device=args.device)
         results_df["num_samples"] = len(topics)
         numeric_cols = results_df.select_dtypes(include="number").columns
         results_df[numeric_cols] = results_df[numeric_cols].apply(
