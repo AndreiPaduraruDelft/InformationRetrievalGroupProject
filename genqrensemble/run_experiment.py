@@ -1,7 +1,7 @@
 import argparse, os
 from datetime import datetime
 import pyterrier as pt
-from config import INSTRUCTIONS, DATASETS
+from config import INSTRUCTIONS, DATASETS, DATASET_CONFIG
 from reformulator import HFReformulator
 from cache import get_cache_path, build_all_reformulated_topics
 from evaluate import run_experiment
@@ -23,6 +23,13 @@ def load_pt_dataset(dataset_name):
     if "query" not in topics.columns and "text" in topics.columns:
         topics = topics.rename(columns={"text": "query"})
     return dataset.get_corpus_iter, topics, qrels, fields
+
+
+def _concat_corpus_iter(corpus_iter_fn, concat_fields):
+    """Wrap a corpus iterator to concatenate specified fields into 'text'."""
+    for doc in corpus_iter_fn():
+        doc["text"] = " ".join(doc.get(f, "") or "" for f in concat_fields)
+        yield doc
 
 
 def get_or_build_index(corpus_iter_fn, index_path, fields):
@@ -62,7 +69,7 @@ def main():
     if not pt.java.started():
         pt.java.init()
 
-    reformulator = HFReformulator(model_id=args.model, device=args.device)
+    reformulator_factory = lambda: HFReformulator(model_id=args.model, device=args.device)
     os.makedirs(args.output, exist_ok=True)
 
     for dataset_name in args.datasets:
@@ -76,10 +83,26 @@ def main():
         topics = topics[topics["qid"].astype(str).isin(judged_qids)].reset_index(drop=True)
         print(f"  {len(topics)} judged topics, {len(qrels)} qrels")
 
+        ds_cfg        = DATASET_CONFIG.get(dataset_name, {"rel_threshold": 2, "num_results": 1000,
+                                                           "bm25_k1": 1.2, "bm25_b": 0.75})
+        rel_threshold = ds_cfg["rel_threshold"]
+        num_results   = ds_cfg["num_results"]
+        bm25_k1       = ds_cfg["bm25_k1"]
+        bm25_b        = ds_cfg["bm25_b"]
+        concat_fields = ds_cfg.get("concat_fields")
+
+        if concat_fields:
+            effective_corpus = lambda cf=concat_fields: _concat_corpus_iter(corpus_iter_fn, cf)
+            effective_fields = ["text"]
+        else:
+            effective_corpus = corpus_iter_fn
+            effective_fields = fields
+
         index_path = os.path.join(args.cache_dir, "indices", dataset_name.replace("/", "_"))
-        index      = get_or_build_index(corpus_iter_fn, index_path, fields)
-        bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=1000)
-        print("  BM25 retriever ready")
+        index      = get_or_build_index(effective_corpus, index_path, effective_fields)
+        bm25       = pt.terrier.Retriever(index, wmodel="BM25", num_results=num_results,
+                                          controls={"bm25.k_1": bm25_k1, "bm25.k_3": 8, "c": bm25_b})
+        print(f"  BM25 retriever ready (num_results={num_results}, k1={bm25_k1}, b={bm25_b}, rel_threshold={rel_threshold})")
 
         if args.num_samples is not None:
             topics = topics.head(args.num_samples).reset_index(drop=True)
@@ -102,7 +125,7 @@ def main():
         try:
             print("  reformulating queries ...")
             flanqr_topics, ensemble_topics = build_all_reformulated_topics(
-                topics, reformulator, INSTRUCTIONS, cache_path,
+                topics, reformulator_factory, INSTRUCTIONS, cache_path,
                 use_cache=args.use_cache, log_file=log_file,
             )
             print("  reformulations done.")
@@ -111,7 +134,8 @@ def main():
                 log_file.close()
 
         results_df = run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_topics,
-                                    rerank=args.rerank, rerank_depth=args.rerank_depth)
+                                    rerank=args.rerank, rerank_depth=args.rerank_depth,
+                                    rel_threshold=rel_threshold)
         results_df["num_samples"] = len(topics)
         numeric_cols = results_df.select_dtypes(include="number").columns
         results_df[numeric_cols] = results_df[numeric_cols].apply(
