@@ -44,7 +44,7 @@ def build_reformulated_topics(topics, reformulator, instructions, cache_path, mo
     return pd.DataFrame(rows)
 
 
-def build_all_reformulated_topics(topics, reformulator, instructions, cache_path,
+def build_all_reformulated_topics(topics, reformulator_factory, instructions, cache_path,
                                   use_cache: bool = False, log_file=None):
     """
     Generates FlanQR and GenQREnsemble reformulations for each query in a single
@@ -57,17 +57,22 @@ def build_all_reformulated_topics(topics, reformulator, instructions, cache_path
     cache        = load_cache(cache_path) if use_cache else {}
     flanqr_rows  = []
     ensemble_rows = []
+    reformulator = None
 
     for _, row in tqdm(topics.iterrows(), total=len(topics), desc="reformulating queries"):
         qid, query = str(row["qid"]), row["query"]
 
         flanqr_key = f"flanqr__{qid}"
         if flanqr_key not in cache:
+            if reformulator is None:
+                reformulator = reformulator_factory()
             cache[flanqr_key] = flanqr_reformulate(query, reformulator, instructions[0])
             save_cache(cache_path, cache)
 
         ensemble_key = f"ensemble__{qid}"
         if ensemble_key not in cache:
+            if reformulator is None:
+                reformulator = reformulator_factory()
             cache[ensemble_key] = genqr_ensemble_reformulate(query, reformulator, instructions)
             save_cache(cache_path, cache)
 

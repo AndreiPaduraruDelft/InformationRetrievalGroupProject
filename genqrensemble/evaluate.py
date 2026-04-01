@@ -87,7 +87,7 @@ def run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_to
     if rerank:
         print(f"  reranking has started (depth={rerank_depth})")
         from pyterrier_t5 import MonoT5ReRanker
-        mono_t5  = MonoT5ReRanker(model="castorini/monot5-base-msmarco", verbose=False)
+        mono_t5  = MonoT5ReRanker(model="castorini/monot5-base-msmarco", verbose=True)
         get_text = pt.text.get_text(pt.get_dataset(f"irds:{dataset_name}"), "text")
         pipelines += [
             (bm25          % rerank_depth) >> get_text >> mono_t5,

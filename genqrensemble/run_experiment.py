@@ -66,7 +66,7 @@ def main():
     if not pt.java.started():
         pt.java.init()
 
-    reformulator = HFReformulator(model_id=args.model, device=args.device)
+    reformulator_factory = lambda: HFReformulator(model_id=args.model, device=args.device)
     os.makedirs(args.output, exist_ok=True)
 
     for dataset_name in args.datasets:
@@ -122,7 +122,7 @@ def main():
         try:
             print("  reformulating queries ...")
             flanqr_topics, ensemble_topics = build_all_reformulated_topics(
-                topics, reformulator, INSTRUCTIONS, cache_path,
+                topics, reformulator_factory, INSTRUCTIONS, cache_path,
                 use_cache=args.use_cache, log_file=log_file,
             )
             print("  reformulations done.")
