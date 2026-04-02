@@ -1,0 +1,998 @@
+[
+  {
+    "qid": "301",
+    "query": "International Organized Crime"
+  },
+  {
+    "qid": "302",
+    "query": "Poliomyelitis and Post-Polio"
+  },
+  {
+    "qid": "303",
+    "query": "Hubble Telescope Achievements"
+  },
+  {
+    "qid": "304",
+    "query": "Endangered Species (Mammals)"
+  },
+  {
+    "qid": "305",
+    "query": "Most Dangerous Vehicles"
+  },
+  {
+    "qid": "306",
+    "query": "African Civilian Deaths"
+  },
+  {
+    "qid": "307",
+    "query": "New Hydroelectric Projects"
+  },
+  {
+    "qid": "308",
+    "query": "Implant Dentistry"
+  },
+  {
+    "qid": "309",
+    "query": "Rap and Crime"
+  },
+  {
+    "qid": "310",
+    "query": "Radio Waves and Brain Cancer"
+  },
+  {
+    "qid": "311",
+    "query": "Industrial Espionage"
+  },
+  {
+    "qid": "312",
+    "query": "Hydroponics"
+  },
+  {
+    "qid": "313",
+    "query": "Magnetic Levitation-Maglev"
+  },
+  {
+    "qid": "314",
+    "query": "Marine Vegetation"
+  },
+  {
+    "qid": "315",
+    "query": "Unexplained Highway Accidents"
+  },
+  {
+    "qid": "316",
+    "query": "Polygamy Polyandry Polygyny"
+  },
+  {
+    "qid": "317",
+    "query": "Unsolicited Faxes"
+  },
+  {
+    "qid": "318",
+    "query": "Best Retirement Country"
+  },
+  {
+    "qid": "319",
+    "query": "New Fuel Sources"
+  },
+  {
+    "qid": "320",
+    "query": "Undersea Fiber Optic Cable"
+  },
+  {
+    "qid": "321",
+    "query": "Women in Parliaments"
+  },
+  {
+    "qid": "322",
+    "query": "International Art Crime"
+  },
+  {
+    "qid": "323",
+    "query": "Literary/Journalistic Plagiarism"
+  },
+  {
+    "qid": "324",
+    "query": "Argentine/British Relations"
+  },
+  {
+    "qid": "325",
+    "query": "Cult Lifestyles"
+  },
+  {
+    "qid": "326",
+    "query": "Ferry Sinkings"
+  },
+  {
+    "qid": "327",
+    "query": "Modern Slavery"
+  },
+  {
+    "qid": "328",
+    "query": "Pope Beatifications"
+  },
+  {
+    "qid": "329",
+    "query": "Mexican Air Pollution"
+  },
+  {
+    "qid": "330",
+    "query": "Iran-Iraq Cooperation"
+  },
+  {
+    "qid": "331",
+    "query": "World Bank Criticism"
+  },
+  {
+    "qid": "332",
+    "query": "Income Tax Evasion"
+  },
+  {
+    "qid": "333",
+    "query": "Antibiotics Bacteria Disease"
+  },
+  {
+    "qid": "334",
+    "query": "Export Controls Cryptography"
+  },
+  {
+    "qid": "335",
+    "query": "Adoptive Biological Parents"
+  },
+  {
+    "qid": "336",
+    "query": "Black Bear Attacks"
+  },
+  {
+    "qid": "337",
+    "query": "Viral Hepatitis"
+  },
+  {
+    "qid": "338",
+    "query": "Risk of Aspirin"
+  },
+  {
+    "qid": "339",
+    "query": "Alzheimer's Drug Treatment"
+  },
+  {
+    "qid": "340",
+    "query": "Land Mine Ban"
+  },
+  {
+    "qid": "341",
+    "query": "Airport Security"
+  },
+  {
+    "qid": "342",
+    "query": "Diplomatic Expulsion"
+  },
+  {
+    "qid": "343",
+    "query": "Police Deaths"
+  },
+  {
+    "qid": "344",
+    "query": "Abuses of E-Mail"
+  },
+  {
+    "qid": "345",
+    "query": "Overseas Tobacco Sales"
+  },
+  {
+    "qid": "346",
+    "query": "Educational Standards"
+  },
+  {
+    "qid": "347",
+    "query": "Wildlife Extinction"
+  },
+  {
+    "qid": "348",
+    "query": "Agoraphobia"
+  },
+  {
+    "qid": "349",
+    "query": "Metabolism"
+  },
+  {
+    "qid": "350",
+    "query": "Health and Computer Terminals"
+  },
+  {
+    "qid": "351",
+    "query": "Falkland petroleum exploration"
+  },
+  {
+    "qid": "352",
+    "query": "British Chunnel impact"
+  },
+  {
+    "qid": "353",
+    "query": "Antarctica exploration"
+  },
+  {
+    "qid": "354",
+    "query": "journalist risks"
+  },
+  {
+    "qid": "355",
+    "query": "ocean remote sensing"
+  },
+  {
+    "qid": "356",
+    "query": "postmenopausal estrogen Britain"
+  },
+  {
+    "qid": "357",
+    "query": "territorial waters dispute"
+  },
+  {
+    "qid": "358",
+    "query": "blood-alcohol fatalities"
+  },
+  {
+    "qid": "359",
+    "query": "mutual fund predictors"
+  },
+  {
+    "qid": "360",
+    "query": "drug legalization benefits"
+  },
+  {
+    "qid": "361",
+    "query": "clothing sweatshops"
+  },
+  {
+    "qid": "362",
+    "query": "human smuggling"
+  },
+  {
+    "qid": "363",
+    "query": "transportation tunnel disasters"
+  },
+  {
+    "qid": "364",
+    "query": "rabies"
+  },
+  {
+    "qid": "365",
+    "query": "El Nino"
+  },
+  {
+    "qid": "366",
+    "query": "commercial cyanide uses"
+  },
+  {
+    "qid": "367",
+    "query": "piracy"
+  },
+  {
+    "qid": "368",
+    "query": "in vitro fertilization"
+  },
+  {
+    "qid": "369",
+    "query": "anorexia nervosa bulimia"
+  },
+  {
+    "qid": "370",
+    "query": "food/drug laws"
+  },
+  {
+    "qid": "371",
+    "query": "health insurance holistic"
+  },
+  {
+    "qid": "372",
+    "query": "Native American casino"
+  },
+  {
+    "qid": "373",
+    "query": "encryption equipment export"
+  },
+  {
+    "qid": "374",
+    "query": "Nobel prize winners"
+  },
+  {
+    "qid": "375",
+    "query": "hydrogen energy"
+  },
+  {
+    "qid": "376",
+    "query": "World Court"
+  },
+  {
+    "qid": "377",
+    "query": "cigar smoking"
+  },
+  {
+    "qid": "378",
+    "query": "euro opposition"
+  },
+  {
+    "qid": "379",
+    "query": "mainstreaming"
+  },
+  {
+    "qid": "380",
+    "query": "obesity medical treatment"
+  },
+  {
+    "qid": "381",
+    "query": "alternative medicine"
+  },
+  {
+    "qid": "382",
+    "query": "hydrogen fuel automobiles"
+  },
+  {
+    "qid": "383",
+    "query": "mental illness drugs"
+  },
+  {
+    "qid": "384",
+    "query": "space station moon"
+  },
+  {
+    "qid": "385",
+    "query": "hybrid fuel cars"
+  },
+  {
+    "qid": "386",
+    "query": "teaching disabled children"
+  },
+  {
+    "qid": "387",
+    "query": "radioactive waste"
+  },
+  {
+    "qid": "388",
+    "query": "organic soil enhancement"
+  },
+  {
+    "qid": "389",
+    "query": "illegal technology transfer"
+  },
+  {
+    "qid": "390",
+    "query": "orphan drugs"
+  },
+  {
+    "qid": "391",
+    "query": "R&D drug prices"
+  },
+  {
+    "qid": "392",
+    "query": "robotics"
+  },
+  {
+    "qid": "393",
+    "query": "mercy killing"
+  },
+  {
+    "qid": "394",
+    "query": "home schooling"
+  },
+  {
+    "qid": "395",
+    "query": "tourism"
+  },
+  {
+    "qid": "396",
+    "query": "sick building syndrome"
+  },
+  {
+    "qid": "397",
+    "query": "automobile recalls"
+  },
+  {
+    "qid": "398",
+    "query": "dismantling Europe's arsenal"
+  },
+  {
+    "qid": "399",
+    "query": "oceanographic vessels"
+  },
+  {
+    "qid": "400",
+    "query": "Amazon rain forest"
+  },
+  {
+    "qid": "401",
+    "query": "foreign minorities, Germany"
+  },
+  {
+    "qid": "402",
+    "query": "behavioral genetics"
+  },
+  {
+    "qid": "403",
+    "query": "osteoporosis"
+  },
+  {
+    "qid": "404",
+    "query": "Ireland, peace talks"
+  },
+  {
+    "qid": "405",
+    "query": "cosmic events"
+  },
+  {
+    "qid": "406",
+    "query": "Parkinson's disease"
+  },
+  {
+    "qid": "407",
+    "query": "poaching, wildlife preserves"
+  },
+  {
+    "qid": "408",
+    "query": "tropical storms"
+  },
+  {
+    "qid": "409",
+    "query": "legal, Pan Am, 103"
+  },
+  {
+    "qid": "410",
+    "query": "Schengen agreement"
+  },
+  {
+    "qid": "411",
+    "query": "salvaging, shipwreck, treasure"
+  },
+  {
+    "qid": "412",
+    "query": "airport security"
+  },
+  {
+    "qid": "413",
+    "query": "steel production"
+  },
+  {
+    "qid": "414",
+    "query": "Cuba, sugar, exports"
+  },
+  {
+    "qid": "415",
+    "query": "drugs, Golden Triangle"
+  },
+  {
+    "qid": "416",
+    "query": "Three Gorges Project"
+  },
+  {
+    "qid": "417",
+    "query": "creativity"
+  },
+  {
+    "qid": "418",
+    "query": "quilts, income"
+  },
+  {
+    "qid": "419",
+    "query": "recycle, automobile tires"
+  },
+  {
+    "qid": "420",
+    "query": "carbon monoxide poisoning"
+  },
+  {
+    "qid": "421",
+    "query": "industrial waste disposal"
+  },
+  {
+    "qid": "422",
+    "query": "art, stolen, forged"
+  },
+  {
+    "qid": "423",
+    "query": "Milosevic, Mirjana Markovic"
+  },
+  {
+    "qid": "424",
+    "query": "suicides"
+  },
+  {
+    "qid": "425",
+    "query": "counterfeiting money"
+  },
+  {
+    "qid": "426",
+    "query": "law enforcement, dogs"
+  },
+  {
+    "qid": "427",
+    "query": "UV damage, eyes"
+  },
+  {
+    "qid": "428",
+    "query": "declining birth rates"
+  },
+  {
+    "qid": "429",
+    "query": "Legionnaires' disease"
+  },
+  {
+    "qid": "430",
+    "query": "killer bee attacks"
+  },
+  {
+    "qid": "431",
+    "query": "robotic technology"
+  },
+  {
+    "qid": "432",
+    "query": "profiling, motorists, police"
+  },
+  {
+    "qid": "433",
+    "query": "Greek, philosophy, stoicism"
+  },
+  {
+    "qid": "434",
+    "query": "Estonia, economy"
+  },
+  {
+    "qid": "435",
+    "query": "curbing population growth"
+  },
+  {
+    "qid": "436",
+    "query": "railway accidents"
+  },
+  {
+    "qid": "437",
+    "query": "deregulation, gas, electric"
+  },
+  {
+    "qid": "438",
+    "query": "tourism, increase"
+  },
+  {
+    "qid": "439",
+    "query": "inventions, scientific discoveries"
+  },
+  {
+    "qid": "440",
+    "query": "child labor"
+  },
+  {
+    "qid": "441",
+    "query": "Lyme disease"
+  },
+  {
+    "qid": "442",
+    "query": "heroic acts"
+  },
+  {
+    "qid": "443",
+    "query": "U.S., investment, Africa"
+  },
+  {
+    "qid": "444",
+    "query": "supercritical fluids"
+  },
+  {
+    "qid": "445",
+    "query": "women clergy"
+  },
+  {
+    "qid": "446",
+    "query": "tourists, violence"
+  },
+  {
+    "qid": "447",
+    "query": "Stirling engine"
+  },
+  {
+    "qid": "448",
+    "query": "ship losses"
+  },
+  {
+    "qid": "449",
+    "query": "antibiotics ineffectiveness"
+  },
+  {
+    "qid": "450",
+    "query": "King Hussein, peace"
+  },
+  {
+    "qid": "601",
+    "query": "Turkey Iraq water"
+  },
+  {
+    "qid": "602",
+    "query": "Czech, Slovak sovereignty"
+  },
+  {
+    "qid": "603",
+    "query": "Tobacco cigarette lawsuit"
+  },
+  {
+    "qid": "604",
+    "query": "Lyme disease arthritis"
+  },
+  {
+    "qid": "605",
+    "query": "Great Britain health care"
+  },
+  {
+    "qid": "606",
+    "query": "leg traps ban"
+  },
+  {
+    "qid": "607",
+    "query": "human genetic code"
+  },
+  {
+    "qid": "608",
+    "query": "taxing social security"
+  },
+  {
+    "qid": "609",
+    "query": "per capita alcohol consumption"
+  },
+  {
+    "qid": "610",
+    "query": "minimum wage adverse impact"
+  },
+  {
+    "qid": "611",
+    "query": "Kurds Germany violence"
+  },
+  {
+    "qid": "612",
+    "query": "Tibet protesters"
+  },
+  {
+    "qid": "613",
+    "query": "Berlin wall disposal"
+  },
+  {
+    "qid": "614",
+    "query": "Flavr Savr tomato"
+  },
+  {
+    "qid": "615",
+    "query": "timber exports Asia"
+  },
+  {
+    "qid": "616",
+    "query": "Volkswagen Mexico"
+  },
+  {
+    "qid": "617",
+    "query": "Russia Cuba economy"
+  },
+  {
+    "qid": "618",
+    "query": "Ayatollah Khomeini death"
+  },
+  {
+    "qid": "619",
+    "query": "Winnie Mandela scandal"
+  },
+  {
+    "qid": "620",
+    "query": "France nuclear testing"
+  },
+  {
+    "qid": "621",
+    "query": "women ordained Church of England"
+  },
+  {
+    "qid": "622",
+    "query": "price fixing"
+  },
+  {
+    "qid": "623",
+    "query": "toxic chemical weapon"
+  },
+  {
+    "qid": "624",
+    "query": "SDI Star Wars"
+  },
+  {
+    "qid": "625",
+    "query": "arrests bombing WTC"
+  },
+  {
+    "qid": "626",
+    "query": "human stampede"
+  },
+  {
+    "qid": "627",
+    "query": "Russian food crisis"
+  },
+  {
+    "qid": "628",
+    "query": "U.S. invasion of Panama"
+  },
+  {
+    "qid": "629",
+    "query": "abortion clinic attack"
+  },
+  {
+    "qid": "630",
+    "query": "Gulf War Syndrome"
+  },
+  {
+    "qid": "631",
+    "query": "Mandela South Africa President"
+  },
+  {
+    "qid": "632",
+    "query": "southeast Asia tin mining"
+  },
+  {
+    "qid": "633",
+    "query": "Welsh devolution"
+  },
+  {
+    "qid": "634",
+    "query": "L-tryptophan deaths"
+  },
+  {
+    "qid": "635",
+    "query": "doctor assisted suicides"
+  },
+  {
+    "qid": "636",
+    "query": "jury duty exemptions"
+  },
+  {
+    "qid": "637",
+    "query": "human growth hormone (HGH)"
+  },
+  {
+    "qid": "638",
+    "query": "wrongful convictions"
+  },
+  {
+    "qid": "639",
+    "query": "consumer on-line shopping"
+  },
+  {
+    "qid": "640",
+    "query": "maternity leave policies"
+  },
+  {
+    "qid": "641",
+    "query": "Valdez wildlife marine life"
+  },
+  {
+    "qid": "642",
+    "query": "Tiananmen Square protesters"
+  },
+  {
+    "qid": "643",
+    "query": "salmon dams Pacific northwest"
+  },
+  {
+    "qid": "644",
+    "query": "exotic animals import"
+  },
+  {
+    "qid": "645",
+    "query": "software piracy"
+  },
+  {
+    "qid": "646",
+    "query": "food stamps increase"
+  },
+  {
+    "qid": "647",
+    "query": "windmill electricity"
+  },
+  {
+    "qid": "648",
+    "query": "family leave law"
+  },
+  {
+    "qid": "649",
+    "query": "computer viruses"
+  },
+  {
+    "qid": "650",
+    "query": "tax evasion indicted"
+  },
+  {
+    "qid": "651",
+    "query": "U.S. ethnic population"
+  },
+  {
+    "qid": "652",
+    "query": "OIC Balkans 1990s"
+  },
+  {
+    "qid": "653",
+    "query": "ETA Basque terrorism"
+  },
+  {
+    "qid": "654",
+    "query": "same-sex schools"
+  },
+  {
+    "qid": "655",
+    "query": "ADD diagnosis treatment"
+  },
+  {
+    "qid": "656",
+    "query": "lead poisoning children"
+  },
+  {
+    "qid": "657",
+    "query": "school prayer banned"
+  },
+  {
+    "qid": "658",
+    "query": "teenage pregnancy"
+  },
+  {
+    "qid": "659",
+    "query": "cruise health safety"
+  },
+  {
+    "qid": "660",
+    "query": "whale watching California"
+  },
+  {
+    "qid": "661",
+    "query": "melanoma treatment causes"
+  },
+  {
+    "qid": "662",
+    "query": "telemarketer protection"
+  },
+  {
+    "qid": "663",
+    "query": "Agent Orange exposure"
+  },
+  {
+    "qid": "664",
+    "query": "American Indian Museum"
+  },
+  {
+    "qid": "665",
+    "query": "poverty Africa sub-Sahara"
+  },
+  {
+    "qid": "666",
+    "query": "Thatcher resignation impact"
+  },
+  {
+    "qid": "667",
+    "query": "unmarried-partner households"
+  },
+  {
+    "qid": "668",
+    "query": "poverty, disease"
+  },
+  {
+    "qid": "669",
+    "query": "Islamic Revolution"
+  },
+  {
+    "qid": "670",
+    "query": "U.S. elections apathy"
+  },
+  {
+    "qid": "671",
+    "query": "Salvation Army benefits"
+  },
+  {
+    "qid": "673",
+    "query": "Soviet withdrawal Afghanistan"
+  },
+  {
+    "qid": "674",
+    "query": "Greenpeace prosecuted"
+  },
+  {
+    "qid": "675",
+    "query": "Olympics training swimming"
+  },
+  {
+    "qid": "676",
+    "query": "poppy cultivation"
+  },
+  {
+    "qid": "677",
+    "query": "Leaning Tower of Pisa"
+  },
+  {
+    "qid": "678",
+    "query": "joint custody impact"
+  },
+  {
+    "qid": "679",
+    "query": "opening adoption records"
+  },
+  {
+    "qid": "680",
+    "query": "immigrants Spanish school"
+  },
+  {
+    "qid": "681",
+    "query": "wind power location"
+  },
+  {
+    "qid": "682",
+    "query": "adult immigrants English"
+  },
+  {
+    "qid": "683",
+    "query": "Czechoslovakia breakup"
+  },
+  {
+    "qid": "684",
+    "query": "part-time benefits"
+  },
+  {
+    "qid": "685",
+    "query": "Oscar winner selection"
+  },
+  {
+    "qid": "686",
+    "query": "Argentina pegging dollar"
+  },
+  {
+    "qid": "687",
+    "query": "Northern Ireland industry"
+  },
+  {
+    "qid": "688",
+    "query": "non-U.S. media bias"
+  },
+  {
+    "qid": "689",
+    "query": "family-planning aid"
+  },
+  {
+    "qid": "690",
+    "query": "college education advantage"
+  },
+  {
+    "qid": "691",
+    "query": "clear-cutting forests"
+  },
+  {
+    "qid": "692",
+    "query": "prostate cancer detection treatment"
+  },
+  {
+    "qid": "693",
+    "query": "newspapers electronic media"
+  },
+  {
+    "qid": "694",
+    "query": "compost pile"
+  },
+  {
+    "qid": "695",
+    "query": "white collar crime sentence"
+  },
+  {
+    "qid": "696",
+    "query": "safety plastic surgery"
+  },
+  {
+    "qid": "697",
+    "query": "air traffic controller"
+  },
+  {
+    "qid": "698",
+    "query": "literacy rates Africa"
+  },
+  {
+    "qid": "699",
+    "query": "term limits"
+  },
+  {
+    "qid": "700",
+    "query": "gasoline tax U.S."
+  }
+]
