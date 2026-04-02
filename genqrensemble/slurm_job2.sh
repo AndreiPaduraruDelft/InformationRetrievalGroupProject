@@ -21,7 +21,7 @@ export IR_DATASETS_HOME=/scratch/knikolaevskii/ir_datasets
 export TRANSFORMERS_OFFLINE=1
 export HF_DATASETS_OFFLINE=1
 
-python reformulate.py --queries beir-webis-touche2020-v2_queries.json \
+python reformulate.py --queries trec-robust04_queries.json \
                           --model google/flan-t5-xxl \
                           --device cuda \
-                          --output cache/google_flan-t5-xxl__beir-webis-touche2020-v2_queries.json
+                          --output cache/google_flan-t5-xxl__trec-robust04_queries.json
