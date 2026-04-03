@@ -37,11 +37,11 @@ class HFReformulator:
         
         outputs = self.model.generate(
             **inputs,
-            max_new_tokens=64,
+            max_new_tokens=20,
+            temperature=0.3,
             do_sample=True,
-            top_p=0.92,
-            top_k=200,
-            repetition_penalty=1.2,
+            top_p=0.9,
+            repetition_penalty=1.5,
         )
         
         if self.is_encoder_decoder:
