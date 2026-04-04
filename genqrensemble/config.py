@@ -11,7 +11,7 @@ INSTRUCTIONS = [
     "Enhance search outcomes by recommending beneficial expansion terms to supplement the query",
 ]
 
-DATASETS = ["msmarco-passage/trec-dl-2019/judged", "beir/dbpedia-entity/test"]
+DATASETS = ["msmarco-passage/trec-dl-2019/judged", "beir/dbpedia-entity/test", "beir/webis-touche2020/v2"]
 
 # Per-dataset retrieval and evaluation settings.
 # rel_threshold: relevance level used for RR and AP (binary cutoff)
@@ -31,4 +31,9 @@ DATASET_CONFIG = {
         "bm25_b":        0.75,
         "concat_fields": ["title", "text"],  # Concatenate title+text into a single index field
     },
+
+    "beir/webis-touche2020/v2": {
+        "rel_threshold": 2, "num_results": 1000,
+        "bm25_k1": 1.2, "bm25_b": 0.75,
+    }
 }
