@@ -166,6 +166,9 @@ def main():
                         help="Number of BM25 results to rerank with MonoT5 (default: 1000)")
     parser.add_argument("--bm25_only", action="store_true",
                         help="Skip LLM reformulation and run BM25 baseline only (fast validation)")
+    parser.add_argument("--reformulations_file", default=None,
+                        help="Path to a pre-built reformulations JSON (flanqr__<qid>/ensemble__<qid> keys). "
+                             "Skips LLM reformulation entirely.")
     parser.add_argument("--bm25_k1", type=float, default=1.2,
                         help="BM25 k1 parameter (default: 1.2)")
     parser.add_argument("--bm25_b", type=float, default=0.75,
@@ -185,7 +188,7 @@ def main():
                 _jc.add_options('--add-modules=jdk.incubator.vector')
         pt.java.init()
 
-    reformulator = None if args.bm25_only else HFReformulator(model_id=args.model, device=args.device)
+    reformulator = None if (args.bm25_only or args.reformulations_file) else HFReformulator(model_id=args.model, device=args.device)
     os.makedirs(args.output, exist_ok=True)
 
     for dataset_name in args.datasets:
@@ -236,6 +239,20 @@ def main():
             print("  --bm25_only: skipping reformulation, using original queries for all pipelines")
             flanqr_topics   = topics.copy()
             ensemble_topics = topics.copy()
+        elif args.reformulations_file:
+            import json as _json
+            print(f"  loading reformulations from {args.reformulations_file} ...")
+            with open(args.reformulations_file) as _f:
+                _ref = _json.load(_f)
+            flanqr_rows   = []
+            ensemble_rows = []
+            for _, _row in topics.iterrows():
+                _qid = str(_row["qid"])
+                flanqr_rows.append({"qid": _qid, "query": _ref.get(f"flanqr__{_qid}", _row["query"])})
+                ensemble_rows.append({"qid": _qid, "query": _ref.get(f"ensemble__{_qid}", _row["query"])})
+            flanqr_topics   = pd.DataFrame(flanqr_rows)
+            ensemble_topics = pd.DataFrame(ensemble_rows)
+            print(f"  loaded {len(flanqr_rows)} reformulated queries.")
         else:
             if args.log_reformulations:
                 os.makedirs("logs", exist_ok=True)
