@@ -102,6 +102,12 @@ def run_experiment(bm25, dataset_name, topics, qrels, flanqr_topics, ensemble_to
             return _orig_from_pretrained(cls, *args, **kwargs)
         T5ForConditionalGeneration.from_pretrained = _safe_from_pretrained
 
+        # Compatibility shim: newer transformers removed batch_encode_plus;
+        # pyterrier_t5 still calls it, so alias it to __call__.
+        from transformers import T5Tokenizer as _T5Tok
+        if not hasattr(_T5Tok, 'batch_encode_plus'):
+            _T5Tok.batch_encode_plus = lambda self, *args, **kwargs: self(*args, **kwargs)
+
         from pyterrier_t5 import MonoT5ReRanker
         mono_t5  = MonoT5ReRanker(model="castorini/monot5-base-msmarco", verbose=False)
 

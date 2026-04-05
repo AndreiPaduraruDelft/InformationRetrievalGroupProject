@@ -41,6 +41,20 @@ class HFReformulator:
         self.device = torch_device
 
         if device == "dml":
+            # Monkey-patch torch.clamp: DirectML doesn't support
+            # aten::clamp.Tensor_out (triggered when min/max are 0-dim tensors,
+            # e.g. computed via torch.where in T5's numerical-stability clamp).
+            # Converting 0-dim tensors to Python scalars forces the scalar
+            # dispatch (aten::clamp.Scalar) which IS supported on DirectML.
+            _orig_torch_clamp = torch.clamp
+            def _dml_safe_clamp(input, min=None, max=None, **kwargs):
+                if isinstance(min, torch.Tensor) and min.ndim == 0:
+                    min = min.item()
+                if isinstance(max, torch.Tensor) and max.ndim == 0:
+                    max = max.item()
+                return _orig_torch_clamp(input, min=min, max=max, **kwargs)
+            torch.clamp = _dml_safe_clamp
+
             # Monkey-patch: DirectML can't handle masked_fill with float16 min
             # in _prepare_4d_causal_attention_mask_with_cache_position.
             # Returning None makes the decoder use default causal behavior.
